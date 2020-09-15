@@ -39,6 +39,10 @@ public class Rater {
         return -1;
     }
 
+    public ArrayList<Rating> getMyRatings() {
+        return myRatings;
+    }
+
     public int numRatings(){ return myRatings.size(); }
 
     public ArrayList<String> getItemsRated(){
