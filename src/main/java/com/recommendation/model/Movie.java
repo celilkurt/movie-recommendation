@@ -1,4 +1,4 @@
-package entity;
+package com.recommendation.model;
 
 import lombok.Getter;
 import lombok.Setter;

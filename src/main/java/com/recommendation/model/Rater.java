@@ -1,6 +1,4 @@
-package entity;
-
-import entity.Rating;
+package com.recommendation.model;
 
 import java.util.ArrayList;
 
