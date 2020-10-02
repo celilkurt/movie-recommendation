@@ -25,16 +25,7 @@ public class Main {
 
         RaterUtil.getInstance().fetchRatingsByFileName(raters,ratings,"ratings.csv");
 
-        //MovieUtil.getInstance().findNumberOfFilmByGenre(movies,"Comedy");
-        //MovieUtil.getInstance().findNumberOfFilmLargerThanByMinutes(movies,150);
-        //MovieUtil.getInstance().findMaxNumOfFilmDirectedByAnyDirector(movies);
-        //MovieUtil.getInstance().findDirectorMostFilmDirected(movies);
-        //MovieUtil.getInstance().findNumOfRatedUniqueMovie(raters);
-        //RaterUtil.getInstance().findNumberOfRatingWithRaterID(raters,"193");
-        //RaterUtil.getInstance().findNumberOfRatingWithMovieID(raters,"1798709");
-
-        //Double rating = MovieUtil.getInstance().getAverageByID(ratings,"1524930",2);
-        //System.out.println("Rating of '1524930': " + rating );
+       
 
         ArrayList<Rating> avarageRatings = MovieUtil.getInstance().getAverageRatings(ratings,12);
         Collections.sort(avarageRatings);
