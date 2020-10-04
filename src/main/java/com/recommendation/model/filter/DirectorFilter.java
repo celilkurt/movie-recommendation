@@ -1,8 +1,11 @@
 package com.recommendation.model.filter;
 
+import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
+import com.recommendation.model.Rating;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DirectorFilter extends Filter<String> {
 
@@ -11,7 +14,7 @@ public class DirectorFilter extends Filter<String> {
     }
 
     @Override
-    public ArrayList<Movie> getMovies(ArrayList<Movie> movies) {
+    public ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies) {
 
         ArrayList<Movie> resultList = new ArrayList<>();
 
@@ -22,4 +25,5 @@ public class DirectorFilter extends Filter<String> {
         }
         return resultList;
     }
+
 }

@@ -1,6 +1,7 @@
 package com.recommendation;
 
 import com.opencsv.CSVReader;
+import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
 import com.recommendation.model.Rater;
 import com.recommendation.model.Rating;
@@ -82,8 +83,8 @@ public class MovieDB {
 
     }
 
-    public ArrayList<Movie> getMoviesByFilter(Filter filter){
-        return filter.getMovies( movies);
+    public ArrayList<Avarage> getAvaragesByFilter(Filter filter){
+        return filter.getAvarages(movies,ratings);
     }
 
 

@@ -1,6 +1,8 @@
 package com.recommendation.model.filter;
 
+import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
+import com.recommendation.model.Rating;
 
 import java.util.ArrayList;
 
@@ -11,7 +13,7 @@ public class MinutesFilter extends Filter<int[]>{
     }
 
     @Override
-    public ArrayList<Movie> getMovies(ArrayList<Movie> movies) {
+    public ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies) {
 
         ArrayList<Movie> resultList = new ArrayList<>();
         for(Movie movie: movies){
@@ -21,4 +23,6 @@ public class MinutesFilter extends Filter<int[]>{
         }
         return resultList;
     }
+
+
 }

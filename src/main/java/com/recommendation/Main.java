@@ -1,5 +1,6 @@
 package com.recommendation;
 
+import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
 import com.recommendation.model.Rater;
 import com.recommendation.model.Rating;
@@ -40,9 +41,9 @@ public class Main {
         }*/
 
 
-        movies = MovieDB.getInstance().getMoviesByFilter(new MinutesFilter(new int[]{0,80}));
+        ArrayList<Avarage> avarages = MovieDB.getInstance().getAvaragesByFilter(new MinutesFilter(new int[]{50,75}));
 
-        movies.forEach(System.out::println);
+        avarages.forEach(System.out::println);
 
     }
 
