@@ -82,8 +82,8 @@ public class MovieDB {
 
     }
 
-    public List<Movie> getMoviesByFilter(Filter filter, String query){
-        return filter.getMovies(query, movies);
+    public ArrayList<Movie> getMoviesByFilter(Filter filter){
+        return filter.getMovies( movies);
     }
 
 

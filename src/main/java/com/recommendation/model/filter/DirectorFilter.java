@@ -1,28 +1,25 @@
 package com.recommendation.model.filter;
 
 import com.recommendation.model.Movie;
-import com.recommendation.model.Rater;
-import com.recommendation.model.Rating;
-
 
 import java.util.ArrayList;
 
-public class YearsAfterFilter extends Filter<Integer> {
+public class DirectorFilter extends Filter<String> {
 
-    public YearsAfterFilter(int query) { super(query);  }
+    public DirectorFilter(String query) {
+        super(query.toLowerCase());
+    }
 
     @Override
-    public ArrayList<Movie> getMovies( ArrayList<Movie> movies) {
+    public ArrayList<Movie> getMovies(ArrayList<Movie> movies) {
 
         ArrayList<Movie> resultList = new ArrayList<>();
+
         for(Movie movie: movies){
-            if(movie.getYear() > query){
+            if(movie.getDirector().toLowerCase().contains(query)){
                 resultList.add(movie);
             }
         }
-
         return resultList;
-
     }
-
 }

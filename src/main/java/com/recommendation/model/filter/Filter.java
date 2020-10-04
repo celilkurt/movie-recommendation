@@ -6,9 +6,11 @@ import com.recommendation.model.Rating;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface Filter<Q> {
+public abstract class Filter<Q> {
 
-    List<Movie> getMovies(Q query, ArrayList<Movie> movies);
+    Q query;
+    public Filter(Q query){ this.query = query;}
 
-    Long getAvarageRatesByFilter(Q query, ArrayList<Movie> movies, ArrayList<Rating> ratings);
+    public abstract ArrayList<Movie> getMovies(ArrayList<Movie> movies);
+
 }

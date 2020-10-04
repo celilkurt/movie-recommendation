@@ -3,6 +3,10 @@ package com.recommendation;
 import com.recommendation.model.Movie;
 import com.recommendation.model.Rater;
 import com.recommendation.model.Rating;
+import com.recommendation.model.filter.DirectorFilter;
+import com.recommendation.model.filter.GenreFilter;
+import com.recommendation.model.filter.MinutesFilter;
+import com.recommendation.model.filter.YearsAfterFilter;
 import com.recommendation.util.MovieUtil;
 import com.recommendation.util.RaterUtil;
 
@@ -17,7 +21,7 @@ public class Main {
 
     public static void main(String[] args){
 
-        movies = new ArrayList<Movie>();
+       /* movies = new ArrayList<Movie>();
         raters = new ArrayList<Rater>();
         ratings = new ArrayList<Rating>();
 
@@ -33,9 +37,12 @@ public class Main {
         for(Rating avarageRating: avarageRatings){
             System.out.println(MovieUtil.getInstance().findMovieWithID(movies,avarageRating.getItem()));
             System.out.println("Avarage rating: " + avarageRating.getValue());
-        }
+        }*/
 
 
+        movies = MovieDB.getInstance().getMoviesByFilter(new MinutesFilter(new int[]{0,80}));
+
+        movies.forEach(System.out::println);
 
     }
 
