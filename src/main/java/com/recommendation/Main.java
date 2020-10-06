@@ -8,11 +8,9 @@ import com.recommendation.model.filter.DirectorFilter;
 import com.recommendation.model.filter.GenreFilter;
 import com.recommendation.model.filter.MinutesFilter;
 import com.recommendation.model.filter.YearsAfterFilter;
-import com.recommendation.util.MovieUtil;
-import com.recommendation.util.RaterUtil;
+import com.recommendation.util.FilterUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Main {
 
@@ -22,28 +20,12 @@ public class Main {
 
     public static void main(String[] args){
 
-       /* movies = new ArrayList<Movie>();
-        raters = new ArrayList<Rater>();
-        ratings = new ArrayList<Rating>();
 
-        MovieUtil.getInstance().fetchMoviesByFileName(movies,"ratedmoviesfull.csv");
+        FilterUtil filterUtil = new FilterUtil(new MinutesFilter(new int[]{90,180}),new DirectorFilter("Clint Eastwood,Joel Coen,Tim Burton,Ron Howard,Nora Ephron,Sydney Pollack"));
+        filterUtil.getMoviesByFilters(MovieDB.getInstance().getMovies(), MovieDB.getInstance().getRatings());
 
-        RaterUtil.getInstance().fetchRatingsByFileName(raters,ratings,"ratings.csv");
-
-       
-
-        ArrayList<Rating> avarageRatings = MovieUtil.getInstance().getAverageRatings(ratings,12);
-        Collections.sort(avarageRatings);
-        System.out.println("Num of avarages: " + avarageRatings.size());
-        for(Rating avarageRating: avarageRatings){
-            System.out.println(MovieUtil.getInstance().findMovieWithID(movies,avarageRating.getItem()));
-            System.out.println("Avarage rating: " + avarageRating.getValue());
-        }*/
-
-
-        ArrayList<Avarage> avarages = MovieDB.getInstance().getAvaragesByFilter(new MinutesFilter(new int[]{50,75}));
-
-        avarages.forEach(System.out::println);
+        System.out.println("Count of movies: " + movies.size());
+        movies.forEach(System.out::println);
 
     }
 

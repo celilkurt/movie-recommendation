@@ -12,8 +12,8 @@ public class Rater {
         myRatings = new ArrayList<Rating>();
     }
 
-    public void addRating(String item, double rating){
-        myRatings.add(new Rating(item,rating));
+    public void addRating(Rating rating){
+        myRatings.add(rating);
     }
 
     public boolean hasRating(String item){

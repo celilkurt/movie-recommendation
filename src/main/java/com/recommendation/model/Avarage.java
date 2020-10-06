@@ -5,13 +5,15 @@ import lombok.Data;
 @Data
 public class Avarage implements Comparable{
 
-    public Avarage(String id){
+    private String id;
+    private double avarage;
+    private Movie movie;
+
+    public Avarage(String id, Movie movie){
+        this.movie = movie;
         this.id = id;
         avarage = 0;
     }
-
-    private String id;
-    private double avarage;
 
     @Override
     public int compareTo(Object o) {

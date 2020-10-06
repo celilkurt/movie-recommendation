@@ -25,35 +25,7 @@ public class RaterUtil {
         return instance;
     }
 
-    public void fetchRatingsByFileName(ArrayList<Rater> raters, ArrayList<Rating> ratings, String fileName){
 
-        try{
-            int count = 0;
-            CSVReader csvReader = new CSVReader(new FileReader("ratings.csv"));
-            String[] values = null;
-            values = csvReader.readNext();
-            while ((values = csvReader.readNext()) != null) {
-                String id = values[0].trim();
-                Rater rater = findRaterWithID(raters, id);
-
-                if(rater == null){
-                    rater = new Rater(values[0].trim());
-                    raters.add(rater);
-                }
-                ratings.add(new Rating(values[1],Double.parseDouble(values[2])));
-                rater.addRating(values[1],Double.parseDouble(values[2]));
-                count++;
-            }
-
-            logger.info("Number of Ratings: " + count);
-            logger.info("Number of Raters: " + raters.size());
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public int findMaxRatingsNumber(ArrayList<Rater> raters){
 
