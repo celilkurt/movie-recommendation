@@ -1,5 +1,6 @@
 package com.recommendation.model.filter;
 
+import com.recommendation.MovieDB;
 import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
 import com.recommendation.model.Rating;
@@ -14,17 +15,27 @@ public class DirectorFilter extends Filter<String[]> {
     }
 
     @Override
-    public ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies) {
+    public ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies, int minRater) {
 
         ArrayList<Movie> resultList = new ArrayList<>();
         String[] queries = query;
         for(Movie movie: movies){
-            for(String query: queries){
-                if(movie.getDirector().toLowerCase().contains(query)){
-                    resultList.add(movie);
-                    break;
+            if(MovieDB.getInstance().getRatingFrequence().get(movie.getId()) >= minRater){
+                for(String query: queries){
+                    String[] directors = movie.getDirector().toLowerCase().split(",");
+                    boolean key = false;
+                    for(String director: directors){
+                        if(director.equals(query)){
+                            resultList.add(movie);
+                            break;
+                        }
+                    }
+                    if(key){
+                        break;
+                    }
                 }
             }
+
         }
         return resultList;
     }

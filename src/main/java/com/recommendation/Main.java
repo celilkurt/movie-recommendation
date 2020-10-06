@@ -14,15 +14,11 @@ import java.util.ArrayList;
 
 public class Main {
 
-    private static ArrayList<Movie> movies;
-    private static ArrayList<Rater> raters;
-    private static ArrayList<Rating> ratings;
 
     public static void main(String[] args){
 
-
-        FilterUtil filterUtil = new FilterUtil(new MinutesFilter(new int[]{90,180}),new DirectorFilter("Clint Eastwood,Joel Coen,Tim Burton,Ron Howard,Nora Ephron,Sydney Pollack"));
-        filterUtil.getMoviesByFilters(MovieDB.getInstance().getMovies(), MovieDB.getInstance().getRatings());
+        FilterUtil filterUtil = new FilterUtil(3,new DirectorFilter("Clint Eastwood,Joel Coen,Tim Burton,Ron Howard,Nora Ephron,Sydney Pollack"), new MinutesFilter(new int[]{90,180}));
+        ArrayList<Movie> movies = filterUtil.getMoviesByFilters(MovieDB.getInstance().getMovies(), MovieDB.getInstance().getRatings());
 
         System.out.println("Count of movies: " + movies.size());
         movies.forEach(System.out::println);

@@ -13,7 +13,7 @@ public abstract class Filter<Q> {
     Q query;
     public Filter(Q query){ this.query = query;}
 
-    public abstract ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies);
+    public abstract ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies,int minRater);
 
 
 }

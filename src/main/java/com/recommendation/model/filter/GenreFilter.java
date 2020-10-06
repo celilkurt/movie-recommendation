@@ -1,5 +1,6 @@
 package com.recommendation.model.filter;
 
+import com.recommendation.MovieDB;
 import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
 import com.recommendation.model.Rating;
@@ -14,14 +15,17 @@ public class GenreFilter extends Filter<String>{
     }
 
     @Override
-    public ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies) {
+    public ArrayList<Movie> getMoviesByFilter(ArrayList<Movie> movies,int minRater) {
 
         ArrayList<Movie> resultList = new ArrayList<>();
 
         for(Movie movie: movies){
-            if(movie.getGenres().toLowerCase().contains(query)){
-                resultList.add(movie);
+            if(MovieDB.getInstance().getRatingFrequence().get(movie.getId()) >= minRater){
+                if(movie.getGenres().toLowerCase().contains(query)){
+                    resultList.add(movie);
+                }
             }
+
         }
         return resultList;
     }

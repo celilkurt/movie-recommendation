@@ -1,27 +1,36 @@
 package com.recommendation.util;
 
+import com.recommendation.MovieDB;
 import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
 import com.recommendation.model.Rating;
 import com.recommendation.model.filter.Filter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class FilterUtil {
 
     private ArrayList<Filter> filters;
+    private int minRater = 0;
 
-    public FilterUtil(Filter... filters){
+    public FilterUtil(int minRater, Filter... filters){
+        this.minRater = minRater;
         this.filters = new ArrayList<Filter>();
-        for(Filter filter: filters){
-            this.filters.add(filter);
-        }
+        this.filters.addAll(Arrays.asList(filters));
     }
 
     public ArrayList<Movie> getMoviesByFilters(ArrayList<Movie> movies, ArrayList<Rating> ratings){
         for(Filter filter: filters){
-            movies = filter.getMoviesByFilter(movies);
+            movies = filter.getMoviesByFilter(movies,minRater);
+            ArrayList<Movie> tempList = new ArrayList<>();
+            for(Movie movie: movies){
+                if(MovieDB.getRatingFrequence().get(movie.getId()) >= minRater){
+                    tempList.add(movie);
+                }
+            }
+            movies = tempList;
         }
         return movies;
     }
