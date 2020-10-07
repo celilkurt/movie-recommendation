@@ -18,7 +18,7 @@ public class YearsAfterFilter extends Filter<Integer> {
 
         HashMap<String,Movie>  resultList = new HashMap<>();
         for(Map.Entry<String,Movie> entry: movies.entrySet()){
-            if(MovieDB.getInstance().getRatingFrequence().get(entry.getKey()) >= minRater){
+            if(MovieDB.getInstance().getRatings().get(entry.getKey()).size() >= minRater){
                 if(entry.getValue().getYear() >= query){
                     resultList.put(entry.getKey(),entry.getValue());
                 }

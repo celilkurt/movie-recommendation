@@ -41,12 +41,15 @@ public class FilterUtil {
             double sum = 0;
             int count = 0;
 
-            for(Rating rating: MovieDB.getInstance().getRatings().values()){
-                if(rating.getItem().equals(movie.getKey())){
+            if(MovieDB.getInstance().getRatings().containsKey(movie.getKey())){
+                for(Double rating: MovieDB.getInstance().getRatings().get(movie.getKey())){
+                    sum+=rating;
                     count++;
-                    sum += rating.getValue();
                 }
+            }else{
+                count = 1;
             }
+
             avarage.setAvarage(sum/count);
             avarages.add(avarage);
         }

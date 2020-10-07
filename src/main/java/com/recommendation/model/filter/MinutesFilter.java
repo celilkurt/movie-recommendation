@@ -21,7 +21,7 @@ public class MinutesFilter extends Filter<int[]>{
 
         HashMap<String,Movie> resultList = new HashMap<>();
         for(Map.Entry<String,Movie> movie: movies.entrySet()){
-            if(MovieDB.getInstance().getRatingFrequence().get(movie.getKey()) >= minRater){
+            if(MovieDB.getInstance().getRatings().get(movie.getKey()).size() >= minRater){
                 if(movie.getValue().getMinutes() >= query[0] && movie.getValue().getMinutes() <= query[1]){
                     resultList.put(movie.getKey(),movie.getValue());
                 }

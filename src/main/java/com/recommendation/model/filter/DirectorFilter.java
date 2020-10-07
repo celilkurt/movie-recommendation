@@ -16,14 +16,15 @@ public class DirectorFilter extends Filter<String[]> {
 
         HashMap<String,Movie> resultList = new HashMap<>();
         String[] queries = query;
-        for(Map.Entry<String,Movie> movie: movies.entrySet()){
-            if(MovieDB.getInstance().getRatingFrequence().get(movie.getKey()) >= minRater){
+        for(Movie movie: movies.values()){
+            if(MovieDB.getInstance().getRatings().get(movie.getId()).size() >= minRater){
+                boolean key = false;
+                String[] directors = movie.getDirector().toLowerCase().split(",");
                 for(String query: queries){
-                    String[] directors = movie.getValue().getDirector().toLowerCase().split(",");
-                    boolean key = false;
                     for(String director: directors){
                         if(director.equals(query)){
-                            resultList.put(movie.getKey(),movie.getValue());
+                            resultList.put(movie.getId(),movie);
+                            key = true;
                             break;
                         }
                     }

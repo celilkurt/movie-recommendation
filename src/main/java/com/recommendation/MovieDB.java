@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,15 +17,13 @@ public class MovieDB {
     private static MovieDB instance;
     private static HashMap<String,Movie> movies;
     private static HashMap<String,Rater> raters;
-    private static HashMap<String,Rating> ratings;
-    private static HashMap<String,Integer> ratingFrequence ;
+    private static HashMap<String, ArrayList<Double>> ratings;
     private static final Logger logger = Logger.getLogger(MovieDB.class);
 
     private MovieDB(){
         movies = new HashMap<>();
         raters = new HashMap<>();
         ratings = new HashMap<>();
-        ratingFrequence = new HashMap<>();
     }
 
 
@@ -32,22 +31,13 @@ public class MovieDB {
         if(instance == null){
             instance = new MovieDB();
             instance.fetchRatingsByFileName("ratings.csv");
-            instance.setRatingFrequence();
             instance.fetchMoviesByFileName("ratedmoviesfull.csv");
 
         }
         return instance;
     }
 
-    private void setRatingFrequence(){
-        for(Map.Entry<String,Rating> rating: ratings.entrySet()){
-            if(ratingFrequence.containsKey(rating.getKey())){
-                ratingFrequence.put(rating.getKey(),ratingFrequence.get(rating.getKey()) +1);
-            }else{
-                ratingFrequence.put(rating.getKey(),1);
-            }
-        }
-    }
+
 
     public HashMap<String, Movie> getMovies() {
         return movies;
@@ -57,12 +47,8 @@ public class MovieDB {
         return raters;
     }
 
-    public HashMap<String, Rating> getRatings() {
+    public HashMap<String, ArrayList<Double>> getRatings() {
         return ratings;
-    }
-
-    public HashMap<String, Integer> getRatingFrequence() {
-        return ratingFrequence;
     }
 
     public void fetchMoviesByFileName(String fileName){
@@ -86,19 +72,29 @@ public class MovieDB {
             CSVReader csvReader = new CSVReader(new FileReader(fileName));
             String[] values = csvReader.readNext();
             while ((values = csvReader.readNext()) != null) {
-                String id = values[0];
+                String userId = values[0];
+                String movieId = values[1];
+                Double rate = Double.parseDouble(values[2]);
 
                 Rater rater ;
-                if(raters.containsKey(id)){
-                    rater = raters.get(id);
+                if(raters.containsKey(userId)){
+                    rater = raters.get(userId);
                 }else{
-                    rater = new Rater(id);
-                    raters.put(id,rater);
+                    rater = new Rater(userId);
+                    raters.put(userId,rater);
                 }
 
-                Rating rating = new Rating(values[1],Double.parseDouble(values[2]));
-                ratings.put(values[1],rating);
+                Rating rating = new Rating(movieId,rate);
                 rater.addRating(rating);
+
+                if(ratings.containsKey(movieId)){
+                    ratings.get(movieId).add(rate);
+                }else{
+                    ArrayList<Double> rateList = new ArrayList<>();
+                    rateList.add(rate);
+                    ratings.put(movieId,rateList);
+                }
+
             }
 
         } catch (IOException e) {
