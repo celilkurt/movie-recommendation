@@ -6,9 +6,7 @@ import com.recommendation.model.Movie;
 import com.recommendation.model.Rating;
 import com.recommendation.model.filter.Filter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 public class FilterUtil {
 
@@ -21,37 +19,30 @@ public class FilterUtil {
         this.filters.addAll(Arrays.asList(filters));
     }
 
-    public ArrayList<Movie> getMoviesByFilters(ArrayList<Movie> movies, ArrayList<Rating> ratings){
+    public HashMap<String,Movie> getMoviesByFilters(HashMap<String,Movie> movies){
         for(Filter filter: filters){
             movies = filter.getMoviesByFilter(movies,minRater);
-            ArrayList<Movie> tempList = new ArrayList<>();
-            for(Movie movie: movies){
-                if(MovieDB.getRatingFrequence().get(movie.getId()) >= minRater){
-                    tempList.add(movie);
-                }
-            }
-            movies = tempList;
         }
         return movies;
     }
 
-    public ArrayList<Avarage> getAvaragesByFilters(ArrayList<Movie> movies, ArrayList<Rating> ratings){
+    public ArrayList<Avarage> getAvaragesByFilters(HashMap<String,Movie> movies){
 
-        movies = getMoviesByFilters(movies, ratings);
-        return getAvarages(movies,ratings);
+        movies = getMoviesByFilters(movies);
+        return getAvarages(movies);
     }
 
-    public ArrayList<Avarage> getAvarages(ArrayList<Movie> movies, ArrayList<Rating> ratings) {
+    public ArrayList<Avarage> getAvarages(HashMap<String,Movie> movies) {
 
 
         ArrayList<Avarage> avarages = new ArrayList<>();
-        for(Movie movie: movies){
-            Avarage avarage = new Avarage(movie.getId(), movie);
+        for(Map.Entry<String,Movie> movie: movies.entrySet()){
+            Avarage avarage = new Avarage(movie.getKey(), movie.getValue());
             double sum = 0;
             int count = 0;
 
-            for(Rating rating: ratings){
-                if(rating.getItem().equals(movie.getId())){
+            for(Rating rating: MovieDB.getInstance().getRatings().values()){
+                if(rating.getItem().equals(movie.getKey())){
                     count++;
                     sum += rating.getValue();
                 }

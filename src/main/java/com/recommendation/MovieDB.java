@@ -1,78 +1,76 @@
 package com.recommendation;
 
 import com.opencsv.CSVReader;
-import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
 import com.recommendation.model.Rater;
 import com.recommendation.model.Rating;
-import com.recommendation.model.filter.Filter;
-import com.recommendation.util.MovieUtil;
-import com.recommendation.util.RaterUtil;
 import org.apache.log4j.Logger;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MovieDB {
 
     private static MovieDB instance;
-    private static ArrayList<Movie> movies;
-    private static ArrayList<Rater> raters;
-    private static ArrayList<Rating> ratings;
+    private static HashMap<String,Movie> movies;
+    private static HashMap<String,Rater> raters;
+    private static HashMap<String,Rating> ratings;
     private static HashMap<String,Integer> ratingFrequence ;
     private static final Logger logger = Logger.getLogger(MovieDB.class);
 
     private MovieDB(){
-        movies = new ArrayList<>();
-        raters = new ArrayList<>();
-        ratings = new ArrayList<>();
+        movies = new HashMap<>();
+        raters = new HashMap<>();
+        ratings = new HashMap<>();
         ratingFrequence = new HashMap<>();
     }
 
-    public ArrayList<Movie> getMovies(){ return movies; }
 
     public static MovieDB getInstance(){
         if(instance == null){
             instance = new MovieDB();
-            instance.fetchRatingsByFileName(raters,ratings,"ratings.csv");
+            instance.fetchRatingsByFileName("ratings.csv");
             instance.setRatingFrequence();
-            instance.fetchMoviesByFileName(movies,"ratedmoviesfull.csv");
+            instance.fetchMoviesByFileName("ratedmoviesfull.csv");
 
         }
         return instance;
     }
 
     private void setRatingFrequence(){
-        for(Rating rating: ratings){
-            if(ratingFrequence.containsKey(rating.getItem())){
-                ratingFrequence.put(rating.getItem(),ratingFrequence.get(rating.getItem()) +1);
+        for(Map.Entry<String,Rating> rating: ratings.entrySet()){
+            if(ratingFrequence.containsKey(rating.getKey())){
+                ratingFrequence.put(rating.getKey(),ratingFrequence.get(rating.getKey()) +1);
             }else{
-                ratingFrequence.put(rating.getItem(),1);
+                ratingFrequence.put(rating.getKey(),1);
             }
         }
     }
 
-    public static ArrayList<Rater> getRaters() {
+    public HashMap<String, Movie> getMovies() {
+        return movies;
+    }
+
+    public HashMap<String, Rater> getRaters() {
         return raters;
     }
 
-    public static ArrayList<Rating> getRatings() {
+    public HashMap<String, Rating> getRatings() {
         return ratings;
     }
 
-    public static HashMap<String, Integer> getRatingFrequence() {
+    public HashMap<String, Integer> getRatingFrequence() {
         return ratingFrequence;
     }
 
-    public void fetchMoviesByFileName(ArrayList<Movie> movies, String fileName){
+    public void fetchMoviesByFileName(String fileName){
         try{
             CSVReader csvReader = new CSVReader(new FileReader(fileName));
             String[] values = csvReader.readNext();
             while ((values = csvReader.readNext()) != null) {
-                movies.add(new Movie(values[0],values[1],values[2],values[4],values[5],values[3],values[7],values[6]));
-
+                movies.put(values[0],new Movie(values[0],values[1],values[2],values[4],values[5],values[3],values[7],values[6]));
             }
 
             logger.info("Number of films: " + movies.size());
@@ -82,22 +80,24 @@ public class MovieDB {
     }
 
 
-    public void fetchRatingsByFileName(ArrayList<Rater> raters, ArrayList<Rating> ratings, String fileName){
+    public void fetchRatingsByFileName(String fileName){
 
         try{
             CSVReader csvReader = new CSVReader(new FileReader(fileName));
             String[] values = csvReader.readNext();
             while ((values = csvReader.readNext()) != null) {
                 String id = values[0];
-                Rater rater = RaterUtil.getInstance().findRaterWithID(raters, id);
 
-                if(rater == null){
+                Rater rater ;
+                if(raters.containsKey(id)){
+                    rater = raters.get(id);
+                }else{
                     rater = new Rater(id);
-                    raters.add(rater);
+                    raters.put(id,rater);
                 }
-                Double rate = Double.parseDouble(values[2]);
-                Rating rating = new Rating(values[1],rate);
-                ratings.add(rating);
+
+                Rating rating = new Rating(values[1],Double.parseDouble(values[2]));
+                ratings.put(values[1],rating);
                 rater.addRating(rating);
             }
 
@@ -111,7 +111,7 @@ public class MovieDB {
 
     public Movie getMovieById(String id){
 
-        for(Movie movie: movies){
+        for(Movie movie: movies.values()){
             if(movie.getId().equals(id)){
                 return movie;
             }

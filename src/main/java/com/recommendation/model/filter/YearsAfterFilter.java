@@ -7,21 +7,20 @@ import com.recommendation.model.Rater;
 import com.recommendation.model.Rating;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class YearsAfterFilter extends Filter<Integer> {
 
     public YearsAfterFilter(int query) { super(query);  }
 
     @Override
-    public ArrayList<Movie> getMoviesByFilter( ArrayList<Movie> movies, int minRater) {
+    public HashMap<String,Movie> getMoviesByFilter(HashMap<String,Movie> movies, int minRater) {
 
-        ArrayList<Movie> resultList = new ArrayList<>();
-        for(Movie movie: movies){
-            if(MovieDB.getInstance().getRatingFrequence().get(movie.getId()) >= minRater){
-                if(movie.getYear() >= query){
-                    resultList.add(movie);
+        HashMap<String,Movie>  resultList = new HashMap<>();
+        for(Map.Entry<String,Movie> entry: movies.entrySet()){
+            if(MovieDB.getInstance().getRatingFrequence().get(entry.getKey()) >= minRater){
+                if(entry.getValue().getYear() >= query){
+                    resultList.put(entry.getKey(),entry.getValue());
                 }
             }
         }
