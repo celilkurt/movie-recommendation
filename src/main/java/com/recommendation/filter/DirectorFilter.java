@@ -1,4 +1,4 @@
-package com.recommendation.model.filter;
+package com.recommendation.filter;
 
 import com.recommendation.MovieDB;
 import com.recommendation.model.Movie;

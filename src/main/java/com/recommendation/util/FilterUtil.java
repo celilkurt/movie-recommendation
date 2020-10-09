@@ -3,8 +3,7 @@ package com.recommendation.util;
 import com.recommendation.MovieDB;
 import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
-import com.recommendation.model.Rating;
-import com.recommendation.model.filter.Filter;
+import com.recommendation.filter.Filter;
 
 import java.util.*;
 

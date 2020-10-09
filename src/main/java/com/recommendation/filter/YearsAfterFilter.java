@@ -1,10 +1,7 @@
-package com.recommendation.model.filter;
+package com.recommendation.filter;
 
 import com.recommendation.MovieDB;
-import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
-import com.recommendation.model.Rater;
-import com.recommendation.model.Rating;
 
 
 import java.util.*;

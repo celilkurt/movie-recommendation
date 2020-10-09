@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RaterUtil {
 
@@ -25,22 +26,8 @@ public class RaterUtil {
         return instance;
     }
 
-
-
-    public int findMaxRatingsNumber(ArrayList<Rater> raters){
-
-        int maxRatings = 0;
-        for(Rater rater: raters){
-            if(rater.numRatings() > maxRatings){
-                maxRatings = rater.numRatings();
-            }
-        }
-        return maxRatings;
-    }
-
-    public int findNumberOfRatingWithRaterID(ArrayList<Rater> raters, String id){
-        int count = findRaterWithID(raters,id).numRatings();
-        return count;
+    public int findNumberOfRatingWithRaterID(HashMap<String, Rater> raters, String id){
+        return raters.get(id).numRatings();
     }
 
 
@@ -59,12 +46,18 @@ public class RaterUtil {
 
     }
 
-    public Rater findRaterWithID(ArrayList<Rater> raters, String id){
-        for(Rater rater: raters){
-            if(rater.getID().equals(id)){
-                return rater;
+    public static void printCommonRatedMovie(Rater r1, Rater r2){
+
+        for(Rating r1Rating :r1.getMyRatings()){
+            for (Rating r2Rating: r2.getMyRatings()){
+                if(r1Rating.getItem().equals(r2Rating.getItem())){
+                    System.out.println(r1Rating + "  :  " + r2Rating);
+                    break;
+                }
             }
         }
-        return null;
+
     }
+
+
 }

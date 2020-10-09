@@ -1,28 +1,24 @@
-package com.recommendation.model.filter;
+package com.recommendation.filter;
 
 import com.recommendation.MovieDB;
 import com.recommendation.model.Movie;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GenreFilter extends Filter<String>{
+public class MinutesFilter extends Filter<int[]>{
 
-
-    public GenreFilter(String query) {
-        super(query.toLowerCase());
+    public MinutesFilter(int[] query) {
+        super(query);
     }
 
     @Override
     public HashMap<String,Movie> getMoviesByFilter(HashMap<String,Movie> movies, int minRater) {
 
-        HashMap<String,Movie>  resultList = new HashMap<>() ;
-
+        HashMap<String,Movie> resultList = new HashMap<>();
         for(Map.Entry<String,Movie> movie: movies.entrySet()){
             if(MovieDB.getInstance().getRatings().get(movie.getKey()).size() >= minRater){
-                if(movie.getValue().getGenres().toLowerCase().contains(query)){
+                if(movie.getValue().getMinutes() >= query[0] && movie.getValue().getMinutes() <= query[1]){
                     resultList.put(movie.getKey(),movie.getValue());
                 }
             }
