@@ -10,9 +10,7 @@ import com.recommendation.model.filter.MinutesFilter;
 import com.recommendation.model.filter.YearsAfterFilter;
 import com.recommendation.util.FilterUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
 
@@ -20,38 +18,90 @@ public class Main {
 
     public static void main(String[] args){
 
-        HashMap<String,Double> closenesses = getWeightedAvarages("735");
+        String me = "735";
+        HashMap<String,Double> closenesses = getWeightedAvarages(me);
         closenesses.remove("735");
-        String maxId = "";
 
-        for(Map.Entry<String,Double> closeness: closenesses.entrySet()){
-            if(maxId.isEmpty()){
-                maxId = closeness.getKey();
-            }
 
-            if(closenesses.get(maxId) < closeness.getValue()){
-                maxId = closeness.getKey();
-            }
-
+        for(Map.Entry<String,Double> closeness:findTopNCloseness(30,closenesses).entrySet()){
+            System.out.println(me + "-" + closeness.getKey() + ": " + closeness.getValue());
+            printCommonRatedMovie(MovieDB.getInstance().getRaters().get(me),MovieDB.getInstance().getRaters().get(closeness.getKey()));
+            printRecommendations(MovieDB.getInstance().getRaters().get(me),MovieDB.getInstance().getRaters().get(closeness.getKey()),10);
         }
 
-        System.out.println(maxId + ": " + closenesses.get(maxId));
-        for(Rating r1 :MovieDB.getInstance().getRaters().get(maxId).getMyRatings()){
-            for (Rating r2: MovieDB.getInstance().getRaters().get("735").getMyRatings()){
-                if(r1.getItem().equals(r2.getItem())){
-                    System.out.println(r1 + "  :  " + r2);
-                    break;
-                }
-            }
-        }
 
         closenesses.entrySet().forEach((Map.Entry<String,Double> entry) ->{
             System.out.println(entry.getKey() + ": " + entry.getValue());
         });
 
+    }
+
+    public static HashMap<String,Double> findTopNCloseness(int n,HashMap<String,Double> closenesses){
+
+        HashMap<String, Double> topNCloseness = new LinkedHashMap<>();
+
+        for(int i = 0; i < n; i++){
+            String maxId = "";
+
+            for(Map.Entry<String,Double> closeness: closenesses.entrySet()){
+                if(!topNCloseness.containsKey(closeness.getKey())){
+                    if(closeness.getValue() != 0){
+                        if(maxId.isEmpty()){
+                            maxId = closeness.getKey();
+
+                        }else if(closenesses.get(maxId) < closeness.getValue()){
+                            maxId = closeness.getKey();
+                        }
+                    }
+
+
+                }
+
+
+            }
+            topNCloseness.put(maxId,closenesses.get(maxId));
+        }
+
+        return topNCloseness;
+    }
+
+    public static void printCommonRatedMovie(Rater r1, Rater r2){
+
+        for(Rating r1Rating :r1.getMyRatings()){
+            for (Rating r2Rating: r2.getMyRatings()){
+                if(r1Rating.getItem().equals(r2Rating.getItem())){
+                    System.out.println(r1Rating + "  :  " + r2Rating);
+                    break;
+                }
+            }
+        }
 
     }
 
+    public static void printRecommendations(Rater r1, Rater r2, int n){
+        ArrayList<Rating> notCommonMovies = new ArrayList<>();
+        int count = 0;
+        r2.getMyRatings().sort(Rating::compareTo);
+        for(Rating r2Rating: r2.getMyRatings()){
+            boolean isUnique = true;
+            for (Rating r1Rating :r1.getMyRatings()){
+                if(r1Rating.getItem().equals(r2Rating.getItem())){
+                    isUnique = false;
+                    break;
+                }
+            }
+            if(isUnique){
+                notCommonMovies.add(r2Rating);
+                count++;
+            }
+
+            if(count == n){
+                break;
+            }
+        }
+        notCommonMovies.forEach((Rating rating) -> System.out.println(rating.getValue() + ":   " + MovieDB.getInstance().getMovies().get(rating.getItem())));
+
+    }
     public static HashMap<String, Double> getWeightedAvarages(String id){
 
         HashMap<String, Rater> raters = MovieDB.getInstance().getRaters();
@@ -75,15 +125,21 @@ public class Main {
     public static double findCloseness(Rater r1, Rater r2){
 
         double closeness = 0;
+        int count = 0;
         for(Rating r1Rating:r1.getMyRatings()){
             for(Rating r2Rating: r2.getMyRatings()){
                 if(r1Rating.getItem().equals(r2Rating.getItem())){
-                    closeness += (r1Rating.getValue() - 5)*(r2Rating.getValue() - 5);
+                    closeness += Math.abs(r1Rating.getValue()-r2Rating.getValue());
+                    count++;
                     break;
                 }
             }
         }
-        return closeness;
+        if(count != 0){
+            closeness /= count;
+        }
+
+        return -closeness;
     }
 
     static void problem3_4(){
