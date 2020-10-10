@@ -13,6 +13,8 @@ public class ClosenessUtil {
 
     private static ClosenessUtil instance;
 
+    private int minRating = 10;
+
     private ClosenessUtil(){    }
 
     public static ClosenessUtil getInstance() {
@@ -21,6 +23,8 @@ public class ClosenessUtil {
         }
         return instance;
     }
+
+    public void setMinRating(int minRating){ this.minRating = minRating; }
 
     public HashMap<String,Double> getTopNCloseness(String id, int n){
 
@@ -32,14 +36,12 @@ public class ClosenessUtil {
 
             for(Map.Entry<String,Double> closeness: closenesses.entrySet()){
                 if(!topNCloseness.containsKey(closeness.getKey())){
-                    if(closeness.getValue() != 0){
                         if(minId.isEmpty()){
                             minId = closeness.getKey();
 
                         }else if(closenesses.get(minId) > closeness.getValue()){
                             minId = closeness.getKey();
                         }
-                    }
                 }
             }
             if(!minId.isEmpty()){
@@ -67,37 +69,49 @@ public class ClosenessUtil {
 
         for(Rater tempRater: raters.values()){
             if(!tempRater.getID().equals(id)){
-                Double closeness = findCloseness(rater,tempRater);
-                if(closeness != 0){
-                    closenessMap.put(tempRater.getID(),findCloseness(rater,tempRater));
-                }
+                if(getCountCommonRatedMovies(rater,tempRater) >= minRating){
+                    Double closeness = findCloseness(rater,tempRater);
+                    if(closeness == 0){
+                        closenessMap.put(tempRater.getID(),0.01);
+                    }else{
+                        closenessMap.put(tempRater.getID(),closeness);
+                    }
 
+                }
             }
         }
 
         return closenessMap;
     }
 
+    public int getCountCommonRatedMovies(Rater r1, Rater r2){
+        int count = 0;
+        for(Rating r1Rating :r1.getMyRatings()){
+            for(Rating r2Rating: r2.getMyRatings()){
+                if(r1Rating.getItem().equals(r2Rating.getItem())){
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+
     public double findCloseness(Rater r1, Rater r2){
 
         double closeness = 0;
         int count = 0;
-        int sameRateCount = 0;
         for(Rating r1Rating:r1.getMyRatings()){
             for(Rating r2Rating: r2.getMyRatings()){
                 if(r1Rating.getItem().equals(r2Rating.getItem())){
                     closeness += Math.abs(r1Rating.getValue()-r2Rating.getValue());
                     count++;
-                    if((r1Rating.getValue() <= 5 && r2Rating.getValue() <= 5) || (r1Rating.getValue() >= 5 && r2Rating.getValue() >= 5)){
-                        sameRateCount ++;
-                    }
                     break;
                 }
             }
         }
         if(count != 0){
             closeness /= count;
-            closeness -= sameRateCount;
         }
 
         return closeness;
