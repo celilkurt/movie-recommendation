@@ -5,6 +5,7 @@ import com.recommendation.model.Movie;
 import com.recommendation.model.Rater;
 import com.recommendation.model.Rating;
 
+import java.lang.reflect.GenericArrayType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,52 +13,97 @@ import java.util.Map;
 
 public class Main {
 
+    static HashMap<String,Integer> rateFrequence = new HashMap<>();
+    static int minRater = 10;
+
     public static void main(String[] args){
-        String meID = "735";
-        Rater me = MovieDB.getInstance().getRaters().get(meID);
-        HashMap<String, ArrayList<int[]>> similarities = new HashMap<>();
-        for(String id: MovieDB.getInstance().getRaters().keySet()){
-            HashMap<String,int[]> tempSimilarities = getSimilarities(me,MovieDB.getInstance().getRaters().get(id));
-            for(Map.Entry<String,int[]> entry: tempSimilarities.entrySet()){
-                if(similarities.containsKey(entry.getKey())){
-                    similarities.get(entry.getKey()).add(entry.getValue());
-                }else{
-                    ArrayList<int[]> ratings = new ArrayList<>();
-                    ratings.add(entry.getValue());
-                    similarities.put(entry.getKey(), ratings);
-                }
-            }
+        String meID = "800";
+        ArrayList<Rating> weightedAvarages = getAllWeightedAvaragesByRaterId(meID);
+        weightedAvarages.sort(Rating::compareTo);
 
-        }
-        int max = 0;
-        String maxId = "";
-        for(Map.Entry<String, ArrayList<int[]>> entry: similarities.entrySet()){
-            System.out.println("id: " + entry.getKey());
-            if(max < entry.getValue().size()){
-                max = entry.getValue().size();
-                maxId = entry.getKey();
-            }
-            for(int[] ratings:entry.getValue()){
-                System.out.println(ratings[0] + " - " + ratings[1]);
-            }
-        }
-        System.out.println("'" + maxId + "' has " + max + " ratings");
+        weightedAvarages.forEach((Rating rating) -> {
+            System.out.println(MovieDB.getInstance().getMovies().get(rating.getItem()));
+            System.out.println(rating.getValue());
+            System.out.println("Rate frequence: " + rateFrequence.get(rating.getItem()));
+        });
+
 
     }
 
-    public static HashMap<String,int[]> getSimilarities(Rater me, Rater r2){
+    public static ArrayList<Rating> getAllWeightedAvaragesByRaterId(String meId){
 
-        HashMap<String,int[]> similarities = new HashMap<>();
+        ArrayList<Rating> weightedAvarages = new ArrayList<>();
+        Rater me = MovieDB.getInstance().getRaters().get(meId);
+        int count = 0;
+        for(Rater rater: MovieDB.getInstance().getRaters().values()){
+            if(!rater.getID().equals(me.getID()) && minRater <= getCommonMoviesCount(me,rater)){
+                ArrayList<Rating> ratWeightedAvarages = getNotCommonMoviesAvarages(me,rater,getWeightByRater(me,rater));
+                for(Rating rating: ratWeightedAvarages){
+                    Rating curRating = getRatingById(rating.getItem(),weightedAvarages);
+                    if(curRating != null){
+                        rateFrequence.put(rating.getItem(),rateFrequence.get(rating.getItem()) + 1);
+                        Double newAvarage = (curRating.getValue() + rating.getValue())/2;
+                        curRating.setValue(newAvarage);
+                    }else{
+                        weightedAvarages.add(rating);
+                        rateFrequence.put(rating.getItem(),1);
+                    }
+                }
+                count++;
+            }
+        }
+        System.out.println("count: " + count);
+        return weightedAvarages;
+    }
+
+    public static Rating getRatingById(String id, ArrayList<Rating> ratings) {
+
+        for(Rating rating: ratings) {
+            if(rating.getItem().equals(id)) {
+                return rating;
+            }
+        }
+        return null;
+    }
+
+
+    public static ArrayList<Rating> getNotCommonMoviesAvarages(Rater me, Rater rater, int weightOfRater){
+        ArrayList<Rating> ratings = new ArrayList<>();
         for(Rating myRating: me.getMyRatings()){
-            for(Rating r2Rating: r2.getMyRatings()){
-                if(myRating.getItem().equals(r2Rating.getItem())){
-                    similarities.put(myRating.getItem(),new int[]{((int)myRating.getValue())-5,(int)r2Rating.getValue()-5});
+            for(Rating ratRating: rater.getMyRatings()){
+                if(!myRating.getItem().equals(ratRating.getItem())){
+                    ratings.add(new Rating(ratRating.getItem(),weightOfRater*ratRating.getValue()));
                 }
             }
         }
-
-        return similarities;
+        return ratings;
     }
+
+    public static int getCommonMoviesCount(Rater me, Rater rater){
+        int count = 0;
+        for(Rating myRating: me.getMyRatings()){
+            for(Rating ratRating: rater.getMyRatings()){
+                if(myRating.getItem().equals(ratRating.getItem())){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static int getWeightByRater(Rater me, Rater rater){
+
+        int weight = 0;
+        for(Rating myRating: me.getMyRatings()){
+            for(Rating r2Rating: rater.getMyRatings()){
+                if(myRating.getItem().equals(r2Rating.getItem())){
+                    weight += ((int)myRating.getValue()-5)*((int)r2Rating.getValue()-5);
+                }
+            }
+        }
+        return weight;
+    }
+
 
 
 }

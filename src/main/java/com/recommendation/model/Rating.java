@@ -1,8 +1,10 @@
 package com.recommendation.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class Rating implements Comparable<Rating>{
 
     private String item;
