@@ -1,6 +1,6 @@
 package com.recommendation.filter;
 
-import com.recommendation.MovieDB;
+import com.recommendation.Database;
 import com.recommendation.model.Movie;
 
 import java.util.HashMap;
@@ -19,14 +19,22 @@ public class GenreFilter extends Filter<String>{
         HashMap<String,Movie>  resultList = new HashMap<>() ;
 
         for(Map.Entry<String,Movie> movie: movies.entrySet()){
-            if(MovieDB.getInstance().getRatings().get(movie.getKey()).size() >= minRater){
-                if(movie.getValue().getGenres().toLowerCase().contains(query)){
+            if(Database.getInstance().getRatings().get(movie.getKey()).size() >= minRater){
+                if(isMatch(movie.getKey())){
                     resultList.put(movie.getKey(),movie.getValue());
                 }
             }
 
         }
         return resultList;
+    }
+
+    @Override
+    public boolean isMatch(String movieID) {
+        if(Database.getInstance().getMovies().get(movieID).getGenres().toLowerCase().contains(query)){
+            return true;
+        }
+        return false;
     }
 
 

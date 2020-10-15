@@ -10,26 +10,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-public class MovieDB {
+public class Database {
 
-    private static MovieDB instance;
+    private static Database instance;
     private static HashMap<String,Movie> movies;
     private static HashMap<String,Rater> raters;
     private static HashMap<String, ArrayList<Double>> ratings;
-    private static final Logger logger = Logger.getLogger(MovieDB.class);
+    private static final Logger logger = Logger.getLogger(Database.class);
 
-    private MovieDB(){
+    private Database(){
         movies = new HashMap<>();
         raters = new HashMap<>();
         ratings = new HashMap<>();
     }
 
 
-    public static MovieDB getInstance(){
+    public static Database getInstance(){
         if(instance == null){
-            instance = new MovieDB();
+            instance = new Database();
             instance.fetchRatingsByFileName("ratings.csv");
             instance.fetchMoviesByFileName("ratedmoviesfull.csv");
 

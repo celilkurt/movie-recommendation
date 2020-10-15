@@ -1,6 +1,6 @@
 package com.recommendation.util;
 
-import com.recommendation.MovieDB;
+import com.recommendation.Database;
 import com.recommendation.model.Avarage;
 import com.recommendation.model.Movie;
 import com.recommendation.filter.Filter;
@@ -40,8 +40,8 @@ public class FilterUtil {
             double sum = 0;
             int count = 0;
 
-            if(MovieDB.getInstance().getRatings().containsKey(movie.getKey())){
-                for(Double rating: MovieDB.getInstance().getRatings().get(movie.getKey())){
+            if(Database.getInstance().getRatings().containsKey(movie.getKey())){
+                for(Double rating: Database.getInstance().getRatings().get(movie.getKey())){
                     sum+=rating;
                     count++;
                 }
@@ -55,5 +55,15 @@ public class FilterUtil {
         Collections.sort(avarages);
 
         return avarages;
+    }
+
+    //Bütün filtrelerle uyumluysa true döner
+    public boolean isMatchById(String movieId){
+        for(Filter filter :filters){
+            if(!filter.isMatch(movieId)){
+                return false;
+            }
+        }
+        return true;
     }
 }

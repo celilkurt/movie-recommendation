@@ -1,6 +1,6 @@
 package com.recommendation.filter;
 
-import com.recommendation.MovieDB;
+import com.recommendation.Database;
 import com.recommendation.model.Movie;
 
 
@@ -15,8 +15,8 @@ public class YearsAfterFilter extends Filter<Integer> {
 
         HashMap<String,Movie>  resultList = new HashMap<>();
         for(Map.Entry<String,Movie> entry: movies.entrySet()){
-            if(MovieDB.getInstance().getRatings().get(entry.getKey()).size() >= minRater){
-                if(entry.getValue().getYear() >= query){
+            if(Database.getInstance().getRatings().get(entry.getKey()).size() >= minRater){
+                if(isMatch(entry.getKey())){
                     resultList.put(entry.getKey(),entry.getValue());
                 }
             }
@@ -24,6 +24,14 @@ public class YearsAfterFilter extends Filter<Integer> {
 
         return resultList;
 
+    }
+
+    @Override
+    public boolean isMatch(String movieID) {
+        if(Database.getInstance().getMovies().get(movieID).getYear() >= query){
+            return true;
+        }
+        return false;
     }
 
 

@@ -11,5 +11,6 @@ public abstract class Filter<Q> {
 
     public abstract HashMap<String,Movie> getMoviesByFilter(HashMap<String,Movie> movies, int minRater);
 
+    public abstract boolean isMatch(String movieID);
 
 }

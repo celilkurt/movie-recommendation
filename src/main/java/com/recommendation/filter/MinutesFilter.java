@@ -1,6 +1,6 @@
 package com.recommendation.filter;
 
-import com.recommendation.MovieDB;
+import com.recommendation.Database;
 import com.recommendation.model.Movie;
 
 import java.util.HashMap;
@@ -17,14 +17,23 @@ public class MinutesFilter extends Filter<int[]>{
 
         HashMap<String,Movie> resultList = new HashMap<>();
         for(Map.Entry<String,Movie> movie: movies.entrySet()){
-            if(MovieDB.getInstance().getRatings().get(movie.getKey()).size() >= minRater){
-                if(movie.getValue().getMinutes() >= query[0] && movie.getValue().getMinutes() <= query[1]){
+            if(Database.getInstance().getRatings().get(movie.getKey()).size() >= minRater){
+                if(isMatch(movie.getKey())){
                     resultList.put(movie.getKey(),movie.getValue());
                 }
             }
 
         }
         return resultList;
+    }
+
+    @Override
+    public boolean isMatch(String movieID) {
+        Movie movie = Database.getInstance().getMovies().get(movieID);
+        if(movie.getMinutes() >= query[0] && movie.getMinutes() <= query[1]){
+            return true;
+        }
+        return false;
     }
 
 
